@@ -3,7 +3,7 @@ package com.techland.paypay.serviceTypes;
 import com.techland.paypay.contracts.ServiceType;
 import com.techland.paypay.helper.Constants;
 
- final class GetServiceWithNoReturn implements ServiceType{
+final class GetServiceWithNoReturn implements ServiceType {
 
 	@Override
 	public String getRequestType() {
@@ -15,5 +15,4 @@ import com.techland.paypay.helper.Constants;
 		return false;
 	}
 
-	
 }
