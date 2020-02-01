@@ -1,24 +1,29 @@
 package com.techland.paypay.services;
 
+import com.techland.paypay.contracts.ProcessorType;
 import com.techland.paypay.contracts.Service;
 import com.techland.paypay.contracts.ServiceResponse;
 import com.techland.paypay.contracts.ServiceType;
 import com.techland.paypay.ennums.ServiceTypeEnum;
 import com.techland.paypay.helper.URLs;
 import com.techland.paypay.impl.Login;
+import com.techland.paypay.processorTypes.GeneralProcessor;
 import com.techland.paypay.serviceTypes.ServiceTypeFactory;
 
 public final class LoginService implements Service<Login> {
 
 	private final ServiceType serviceType;
 	private final String URL, authorization;
-	private String data;
+	private Login data;
 	private final String contentType;
 	private final boolean isForm;
+	private PayPayServiceProcessor<LoginService, Login,ProcessorType> serviceProcessor;
+	private GeneralProcessor processor;
+	
 
 	public LoginService() {
-		this.serviceType = ServiceTypeFactory.getInstance(ServiceTypeEnum.POSTWITHNORETURN);
-		this.URL = URLs.CU;
+		this.serviceType = ServiceTypeFactory.getInstance(ServiceTypeEnum.POSTWITHRETURN);
+		this.URL = URLs.LO;
 		this.isForm = true;
 		this.authorization = "";
 		this.contentType = "application/json";
@@ -26,9 +31,8 @@ public final class LoginService implements Service<Login> {
 	}
 
 	@Override
-	public ServiceResponse doRequest() {
-		// TODO call PayPayProcesor
-		return null;
+	public ServiceResponse doRequest() {		
+		return 	serviceProcessor.processService(this, data,processor);
 	}
 
 	@Override
@@ -47,7 +51,7 @@ public final class LoginService implements Service<Login> {
 	}
 
 	@Override
-	public String getSuthorization() {
+	public String getAuthorization() {
 		return authorization;
 	}
 
@@ -59,7 +63,7 @@ public final class LoginService implements Service<Login> {
 
 	@Override
 	public void addData(Login data) {
-		this.data = data.toString();
+		this.data = data;
 		
 	}
 

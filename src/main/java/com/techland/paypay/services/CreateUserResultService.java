@@ -12,19 +12,19 @@ import com.techland.paypay.requests.LoginRequest;
 import com.techland.paypay.responses.LoginResponse;
 import com.techland.paypay.serviceTypes.ServiceTypeFactory;
 
-public final class CreateUserService implements Service<User> {
+public final class CreateUserResultService implements Service<String> {
 
 	private final ServiceType serviceType;
 	private final String URL, authorization;
-	private User data;
+	private String id;
 	private GeneralProcessor processor;
 	private final String contentType;
 	private final boolean isForm;
-	private PayPayServiceProcessor<CreateUserService, User,ProcessorType> serviceProcessor;
+	private PayPayServiceProcessor<CreateUserResultService, String,ProcessorType> serviceProcessor;
 
-	public CreateUserService() {
-		this.serviceType = ServiceTypeFactory.getInstance(ServiceTypeEnum.POSTWITHNORETURN);
-		this.URL = URLs.CU;
+	public CreateUserResultService() {
+		this.serviceType = ServiceTypeFactory.getInstance(ServiceTypeEnum.POSTWITHRETURN);
+		this.URL = URLs.CUR;
 		this.isForm = true;
 		this.authorization = "";
 		this.contentType = "application/json";
@@ -33,8 +33,9 @@ public final class CreateUserService implements Service<User> {
 
 	@Override
 	public ServiceResponse doRequest() {		
-		serviceProcessor.processService(this, data,processor);
-		return new ServiceResponse("Sucessfully sent",0,true); 
+	
+		return 	serviceProcessor.processService(this, id,processor);
+		
 	}
 
 	@Override
@@ -64,8 +65,8 @@ public final class CreateUserService implements Service<User> {
 	}
 
 	@Override
-	public void addData(User data) {
-		this.data = data;
+	public void addData(String id) {
+		this.id = id;
 
 	}
 

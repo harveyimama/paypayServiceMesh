@@ -8,7 +8,7 @@ import com.techland.paypay.ennums.ServiceTypeEnum;
 
 public class ServiceTypeFactory {
 
-	private static Map<ServiceTypeEnum, ServiceType> map = new HashMap<ServiceTypeEnum, ServiceType>();
+	private static Map<ServiceTypeEnum, ServiceType> map;
 
 	private ServiceTypeFactory() {
 

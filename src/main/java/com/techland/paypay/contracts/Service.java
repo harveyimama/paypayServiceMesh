@@ -10,7 +10,7 @@ public interface Service<T> {
 
 	boolean isFormParam();
 	
-	String getSuthorization();
+	String getAuthorization();
 	
 	String getContentType();
 	

@@ -1,6 +1,6 @@
 package com.techland.paypay.contracts;
 
-public abstract class ServiceResponse {
+public class ServiceResponse {
 
 	private final String message;
 	private final int responseCode;
