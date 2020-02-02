@@ -8,9 +8,9 @@ import com.techland.paypay.ennums.ServiceTypeEnum;
 import com.techland.paypay.helper.URLs;
 import com.techland.paypay.impl.User;
 import com.techland.paypay.processorTypes.GeneralProcessor;
-import com.techland.paypay.requests.LoginRequest;
-import com.techland.paypay.responses.LoginResponse;
 import com.techland.paypay.serviceTypes.ServiceTypeFactory;
+
+
 
 public final class CreateUserService implements Service<User> {
 
@@ -20,6 +20,7 @@ public final class CreateUserService implements Service<User> {
 	private GeneralProcessor processor;
 	private final String contentType;
 	private final boolean isForm;
+	private int connectTimeOut,readTimeOut;
 	private PayPayServiceProcessor<CreateUserService, User,ProcessorType> serviceProcessor;
 
 	public CreateUserService() {
@@ -28,12 +29,15 @@ public final class CreateUserService implements Service<User> {
 		this.isForm = true;
 		this.authorization = "";
 		this.contentType = "application/json";
+		this.connectTimeOut = 0;
+		this.readTimeOut =0;
+		
 
 	}
 
 	@Override
 	public ServiceResponse doRequest() {		
-		serviceProcessor.processService(this, data,processor);
+		serviceProcessor.processService(this, data,processor); 
 		return new ServiceResponse("Sucessfully sent",0,true); 
 	}
 
@@ -67,6 +71,17 @@ public final class CreateUserService implements Service<User> {
 	public void addData(User data) {
 		this.data = data;
 
+	}
+
+	@Override
+	public int getReadTimeOut() {
+		return this.readTimeOut;
+	}
+
+	@Override
+	public int getConnectTimeOut() {
+	
+		return this.connectTimeOut;
 	}
 
 }

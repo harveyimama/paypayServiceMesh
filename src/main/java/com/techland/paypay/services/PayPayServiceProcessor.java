@@ -8,7 +8,6 @@ import com.techland.paypay.config.PayPayThread;
 import com.techland.paypay.config.Settings;
 import com.techland.paypay.contracts.ProcessorType;
 import com.techland.paypay.contracts.Service;
-import com.techland.paypay.processorTypes.GeneralProcessor;
 import com.techland.paypay.processorTypes.MockProcessor;
 
 public final class PayPayServiceProcessor<R extends Service<S>, S,W extends ProcessorType> {
@@ -24,9 +23,10 @@ public final class PayPayServiceProcessor<R extends Service<S>, S,W extends Proc
 			if (Settings.MOCK)
 				processor = (W) new MockProcessor();
 
-			if (service.getServiceType().getReturnType())
+			if (service.getServiceType().getReturnType()) 
 				ret =  processor.doProcessing(service.getURL(), data.toString(), service.getContentType(),
-						service.getAuthorization(), service.isFormParam(), service.getServiceType().getRequestType());
+						service.getAuthorization(), service.isFormParam(), service.getServiceType().getRequestType(),service.getConnectTimeOut()
+						,service.getReadTimeOut());
 			else {
 				ExecutorService executor = PayPayThread.startThreader();
 
@@ -34,7 +34,8 @@ public final class PayPayServiceProcessor<R extends Service<S>, S,W extends Proc
 					try {
 						processor.setProcessorValues(service.getURL(), data.toString(),
 								service.getContentType(), service.getAuthorization(), service.isFormParam(),
-								service.getServiceType().getRequestType());
+								service.getServiceType().getRequestType(),service.getConnectTimeOut()
+								,service.getReadTimeOut());
 						
 						executor.execute(processor);
 					} finally {

@@ -16,5 +16,11 @@ public interface Service<T> {
 	
 	void addData(final T data);
 	
+	int getReadTimeOut();
+	
+	int getConnectTimeOut();
+
+	
+	
 	
 }

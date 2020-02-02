@@ -1,5 +1,7 @@
 package com.techland.paypay.services;
 
+import java.util.Optional;
+
 import com.techland.paypay.contracts.ProcessorType;
 import com.techland.paypay.contracts.Service;
 import com.techland.paypay.contracts.ServiceResponse;
@@ -21,6 +23,7 @@ public final class CreateUserResultService implements Service<String> {
 	private final String contentType;
 	private final boolean isForm;
 	private PayPayServiceProcessor<CreateUserResultService, String,ProcessorType> serviceProcessor;
+	private int connectTimeOut,readTimeOut;
 
 	public CreateUserResultService() {
 		this.serviceType = ServiceTypeFactory.getInstance(ServiceTypeEnum.POSTWITHRETURN);
@@ -28,6 +31,8 @@ public final class CreateUserResultService implements Service<String> {
 		this.isForm = true;
 		this.authorization = "";
 		this.contentType = "application/json";
+		this.connectTimeOut = 1221;
+		this.readTimeOut =1221;
 
 	}
 
@@ -68,6 +73,18 @@ public final class CreateUserResultService implements Service<String> {
 	public void addData(String id) {
 		this.id = id;
 
+	}
+
+	@Override
+	public int getReadTimeOut() {
+		
+		return this.readTimeOut;
+	}
+
+	@Override
+	public int getConnectTimeOut() {
+	
+		return this.connectTimeOut;
 	}
 
 }

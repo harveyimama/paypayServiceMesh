@@ -19,6 +19,7 @@ public final class LoginService implements Service<Login> {
 	private final boolean isForm;
 	private PayPayServiceProcessor<LoginService, Login,ProcessorType> serviceProcessor;
 	private GeneralProcessor processor;
+	private int readTimeOut,connectTimeOut;
 	
 
 	public LoginService() {
@@ -27,6 +28,8 @@ public final class LoginService implements Service<Login> {
 		this.isForm = true;
 		this.authorization = "";
 		this.contentType = "application/json";
+		this.readTimeOut = 2211;
+		this.connectTimeOut = 221;
 
 	}
 
@@ -65,6 +68,16 @@ public final class LoginService implements Service<Login> {
 	public void addData(Login data) {
 		this.data = data;
 		
+	}
+
+	@Override
+	public int getReadTimeOut() {
+		return this.readTimeOut;
+	}
+
+	@Override
+	public int getConnectTimeOut() {
+		return this.connectTimeOut;
 	}
 
 	
