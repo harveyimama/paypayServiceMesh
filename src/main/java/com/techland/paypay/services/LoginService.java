@@ -8,6 +8,7 @@ import com.techland.paypay.ennums.ServiceTypeEnum;
 import com.techland.paypay.helper.URLs;
 import com.techland.paypay.impl.Login;
 import com.techland.paypay.processorTypes.GeneralProcessor;
+import com.techland.paypay.responses.LoginResponse;
 import com.techland.paypay.serviceTypes.ServiceTypeFactory;
 
 public final class LoginService implements Service<Login> {
@@ -34,8 +35,8 @@ public final class LoginService implements Service<Login> {
 	}
 
 	@Override
-	public ServiceResponse doRequest() {		
-		return 	serviceProcessor.processService(this, data,processor);
+	public LoginResponse doRequest() {		
+		return 	serviceProcessor.processService(this, this.data,this.processor);
 	}
 
 	@Override

@@ -1,5 +1,7 @@
 package com.techland.paypay.services;
 
+import java.util.UUID;
+
 import com.techland.paypay.contracts.ProcessorType;
 import com.techland.paypay.contracts.Service;
 import com.techland.paypay.contracts.ServiceResponse;
@@ -8,9 +10,8 @@ import com.techland.paypay.ennums.ServiceTypeEnum;
 import com.techland.paypay.helper.URLs;
 import com.techland.paypay.impl.User;
 import com.techland.paypay.processorTypes.GeneralProcessor;
+import com.techland.paypay.responses.AsyncResponse;
 import com.techland.paypay.serviceTypes.ServiceTypeFactory;
-
-
 
 public final class CreateUserService implements Service<User> {
 
@@ -20,8 +21,9 @@ public final class CreateUserService implements Service<User> {
 	private GeneralProcessor processor;
 	private final String contentType;
 	private final boolean isForm;
-	private int connectTimeOut,readTimeOut;
-	private PayPayServiceProcessor<CreateUserService, User,ProcessorType> serviceProcessor;
+	private int connectTimeOut, readTimeOut;
+	private PayPayServiceProcessor<CreateUserService, User, ProcessorType> serviceProcessor;
+	private AsyncResponse serviceResponse;
 
 	public CreateUserService() {
 		this.serviceType = ServiceTypeFactory.getInstance(ServiceTypeEnum.POSTWITHNORETURN);
@@ -30,15 +32,16 @@ public final class CreateUserService implements Service<User> {
 		this.authorization = "";
 		this.contentType = "application/json";
 		this.connectTimeOut = 0;
-		this.readTimeOut =0;
-		
+		this.readTimeOut = 0;
+		this.serviceResponse = new AsyncResponse(UUID.randomUUID());
 
 	}
 
 	@Override
-	public ServiceResponse doRequest() {		
-		serviceProcessor.processService(this, data,processor); 
-		return new ServiceResponse("Sucessfully sent",0,true); 
+	public AsyncResponse doRequest() {
+		serviceProcessor.processService(this, this.data, this.processor);
+		serviceResponse.setAll("Sucessfully sent", 0, true);
+		return serviceResponse;
 	}
 
 	@Override
@@ -80,7 +83,7 @@ public final class CreateUserService implements Service<User> {
 
 	@Override
 	public int getConnectTimeOut() {
-	
+
 		return this.connectTimeOut;
 	}
 
