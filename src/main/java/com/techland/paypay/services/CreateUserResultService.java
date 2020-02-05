@@ -39,7 +39,7 @@ public final class CreateUserResultService implements Service<String> {
 	@Override
 	public ServiceResponse doRequest() {		
 	
-		return 	serviceProcessor.processService(this, id,processor);
+		return 	serviceProcessor.processService(this, this.id,this.processor);
 		
 	}
 
