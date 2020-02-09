@@ -3,6 +3,7 @@ package com.techland.paypay.mesh.services;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.techland.paypay.mesh.contracts.ProcessorType;
 import com.techland.paypay.mesh.contracts.Service;
@@ -10,11 +11,10 @@ import com.techland.paypay.mesh.contracts.ServiceResponse;
 import com.techland.paypay.mesh.contracts.ServiceType;
 import com.techland.paypay.mesh.ennums.ServiceTypeEnum;
 import com.techland.paypay.mesh.helper.URLs;
-import com.techland.paypay.mesh.impl.User;
 import com.techland.paypay.mesh.processorTypes.GeneralProcessor;
 import com.techland.paypay.mesh.serviceTypes.ServiceTypeFactory;
-
-public final class CreateUserResultService implements Service<String> {
+@Component
+public final class GetUserService implements Service<String> {
 
 	private final ServiceType serviceType;
 	private final String URL, authorization;
@@ -24,10 +24,10 @@ public final class CreateUserResultService implements Service<String> {
 	private final String contentType,name;
 	private final boolean isForm;
 	@Autowired
-	private PayPayServiceProcessor<CreateUserResultService, String,ProcessorType> serviceProcessor;
+	private PayPayServiceProcessor<GetUserService, String,ProcessorType> serviceProcessor;
 	private int connectTimeOut,readTimeOut;
 
-	public CreateUserResultService() {
+	public GetUserService() {
 		this.serviceType = ServiceTypeFactory.getInstance(ServiceTypeEnum.POSTWITHRETURN);
 		this.URL = URLs.CUR;
 		this.isForm = true;
@@ -36,7 +36,7 @@ public final class CreateUserResultService implements Service<String> {
 		this.connectTimeOut = 1221;
 		this.readTimeOut =1221;
 		this.name ="CreateUserResultService";
-		this.serviceProcessor = new PayPayServiceProcessor<CreateUserResultService, String, ProcessorType>();
+		
 	}
 
 	@Override

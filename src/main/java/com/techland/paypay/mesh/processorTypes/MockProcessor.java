@@ -1,13 +1,14 @@
 package com.techland.paypay.mesh.processorTypes;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
+
 
 import com.techland.paypay.mesh.contracts.ProcessorType;
 import com.techland.paypay.mesh.contracts.ServiceResponse;
 import com.techland.paypay.mesh.responses.ResponseFactory;
 import com.techland.paypay.mesh.responses.SimpleResponse;
-@Service
+@Component
 public final class MockProcessor implements ProcessorType {
 
 	private String url, data, contentType, authorization, requestType;

@@ -3,7 +3,11 @@ package com.techland.paypay.mesh.impl;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.techland.paypay.mesh.config.PayPayLogger;
@@ -13,7 +17,8 @@ import com.techland.paypay.mesh.contracts.ServiceResponse;
 import com.techland.paypay.mesh.responses.AsyncResponse;
 import com.techland.paypay.mesh.responses.LoginResponse;
 import com.techland.paypay.mesh.responses.ResponseFactory;
-import com.techland.paypay.mesh.services.CreateUserResultService;
+import com.techland.paypay.mesh.responses.SimpleResponse;
+import com.techland.paypay.mesh.services.GetUserService;
 import com.techland.paypay.mesh.services.CreateUserService;
 import com.techland.paypay.mesh.services.LoginService;
 
@@ -30,10 +35,6 @@ public class PayPayController {
 	// merchant,user (tied to merchant) ,merchantwallet,card (customer),
 	// customer,transaction,invoice,report,product,integration
 
-	/**
-	 * @param user
-	 * @return
-	 */
 	@Autowired
 	AsyncResponse respAsync;
 	@Autowired
@@ -41,107 +42,88 @@ public class PayPayController {
 	@Autowired
 	CreateUserService cus;
 	@Autowired
-	PayPayLogger<Service<User>, User> userLogger;
+	LoginService ls;
+	@Autowired
+	PayPayLogger paypayLogger;
+	@Autowired
+	SimpleResponse respSimple;
+	@Autowired
+	GetUserService curs;
 
-	@PostMapping("/api/async/user")
-	public AsyncResponse CreateUserAsync(final User user) {
+	
+	/**
+	 * @param user
+	 * @return
+	 */
+	@GetMapping(path = "/api/user/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ServiceResponse getUser(@PathVariable(value = "id") final String id) {
 
-		if (user.isNull())
-		{
-			userLogger.doLog(cus, user.toString());
-			return ResponseFactory.NotNull(respAsync);		
+		if (id == null || "".equals(id)) {
+			paypayLogger.doLog(cus.getName(), id);
+			return ResponseFactory.NotNull(respSimple);
 		}
-		
+
+		curs.addData(id);
+		respSimple = (SimpleResponse) curs.doRequest();
+
+		if (respSimple == null)
+			respSimple = ResponseFactory.NullResponse(respSimple);
+
+		paypayLogger.doLog(curs.getName(), id, respSimple.getMessage());
+
+		return respSimple;
+
+	}
+
+	/**
+	 * @param user
+	 * @return
+	 */
+	@PostMapping(path = "/api/user", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ServiceResponse CreateUser(@RequestBody final User user) {
+
+		if (user.isNull()) {
+			paypayLogger.doLog(cus.getName(), user.toString());
+			return ResponseFactory.NotNull(respSimple);
+		}
+
 		cus.addData(user);
 		respAsync = (AsyncResponse) cus.doRequest();
-
-		userLogger.doLog(cus, user.toString(), respAsync.getMessage(), respAsync.getID().toString());
-
+		
+		if(user.isAsync())
+		{
+		paypayLogger.doLog(cus.getName(), user.toString(), respAsync.getID().toString(), respAsync.getMessage());
 		return respAsync;
-
+		}
+		
+		curs.addData(respAsync.getID().toString());
+		respSimple = iterateRequest(respSimple, curs);
+		if (respSimple == null)
+			respSimple = ResponseFactory.NullResponse(respSimple);
+		paypayLogger.doLog(cus.getName(), user.toString(), respAsync.getID().toString(), respSimple.getMessage());
+		
+		return respSimple;
 	}
 
 	/**
 	 * @param user
 	 * @return
 	 */
-	@PostMapping("/api/async/user/{id}")
-	public ServiceResponse getUser(final String id) {
-
-		ServiceResponse resp = null;
-		if (id == null || "".equals(id))
-			return ResponseFactory.NotNull(resp);
-
-		Service<String> ur = new CreateUserResultService();
-		ur.addData(id);
-		resp = ur.doRequest();
-
-		if (resp == null)
-			resp = ResponseFactory.NullResponse(resp);
-
-		new PayPayLogger<Service<String>, String>().doLog(ur, id, resp.getMessage());
-
-		return resp;
-
-	}
-
-	/**
-	 * @param user
-	 * @return
-	 */
-	@PostMapping("/api/user")
-	public ServiceResponse CreateUser(final User user) {
-		ServiceResponse resp = null;
-		Service<User> u = null;
-
-		if (user == null)
-			return ResponseFactory.NotNull(respAsync);
-
-		try {
-
-			u = new CreateUserService();
-			u.addData(user);
-			respAsync = (AsyncResponse) u.doRequest();
-
-			TimeUnit.SECONDS.sleep(2);
-
-			Service<String> ur = new CreateUserResultService();
-			ur.addData(respAsync.getID().toString());
-
-			resp = ur.doRequest();
-			resp = iterateRequest(resp, ur);
-
-			if (resp == null)
-				resp = ResponseFactory.NullResponse(resp);
-
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-			resp = ResponseFactory.TryCatch(resp);
+	@PostMapping(path = "/api/login", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public LoginResponse Login(@RequestBody final Login login) {
+		if (login.isNull()) {
+			paypayLogger.doLog(ls.getName(), login.toString());
+			return ResponseFactory.NotNull(respLogin);
 		}
 
-		new PayPayLogger<Service<User>, User>().doLog(u, user.toString(), respAsync.getID().toString(),
-				resp.getMessage());
-		return resp;
-	}
-
-	/**
-	 * @param user
-	 * @return
-	 */
-	@PostMapping("/api/login")
-	public LoginResponse Login(final Login login) {
-		if (login == null)
-			return ResponseFactory.NotNull(respLogin);
-
-		Service<Login> u = new LoginService();
-		u.addData(login);
-		respLogin = (LoginResponse) u.doRequest();
+		ls.addData(login);
+		respLogin = (LoginResponse) ls.doRequest();
 
 		if (respLogin == null)
 			respLogin = ResponseFactory.NullResponse(respLogin);
-		
-		new PayPayLogger<Service<Login>, Login>().doLog(u, login.toString(),respLogin.getMessage());
-			return respLogin;
+
+		paypayLogger.doLog(ls.getName(), login.toString(), respLogin.getMessage());
+		return respLogin;
 
 	}
 
@@ -149,17 +131,25 @@ public class PayPayController {
 	 * @param user
 	 * @return
 	 */
-	@SuppressWarnings({ "unchecked" })
+
+	@SuppressWarnings("unchecked")
 	private <R extends Service<S>, T extends ServiceResponse, S> T iterateRequest(T request, R service) {
-		int i = 0;
-		while (request != null && !request.getSuccess() && i < Settings.ASYNC_WAIT_TIME) {
-			try {
-				TimeUnit.SECONDS.sleep(2);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+
+		for (int i = 0; i < Settings.ASYNC_NUMBER_OF_TRIES; i++) {
+
 			request = (T) service.doRequest();
-			i = i++;
+			if (request != null && !request.getSuccess()) {
+				try {
+					TimeUnit.SECONDS.sleep(Settings.ASYNC_WAIT_TIME);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+					request = ResponseFactory.TryCatch(request);
+				}
+			} else {
+				if(request!=null)
+				break;
+			}
+
 		}
 
 		return request;

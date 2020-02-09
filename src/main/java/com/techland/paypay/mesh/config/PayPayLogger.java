@@ -6,24 +6,26 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import com.techland.paypay.mesh.contracts.Service;
 
 @Component
-public class PayPayLogger<T extends Service<U>, U>  implements Runnable {
+public class PayPayLogger  implements Runnable {
 	
 	final Logger logger = LoggerFactory.getLogger(PayPayLogger.class);
-	private T logService;
-	
+		
 
 	private  StringBuilder logs = new StringBuilder();
 	
-	public  void doLog(T serv,final String... items)
+	public  void doLog(final String serviceName,final String... items)
 	{
-		logService = serv;
 		ExecutorService  service = PayPayThread.startThreader();
-		logs.append("\r\n".concat("====Logs Start here=====").concat("\r\n"));  
+		logs.append("\r\n".concat("====Logs Start here=====").concat("\r\n").concat(serviceName).concat("\r\n")); 
+		
+		if (items.length == 0)
+			logs.append("====Logs end here=======");
+		else
 		for(String  item  :  items )
 		{
+			if (item !=null)
 			logs.append(item.concat("\r\n"));
 		}
 		logs.append("====Logs end here=======");
@@ -34,7 +36,7 @@ public class PayPayLogger<T extends Service<U>, U>  implements Runnable {
 	
 	@Override
 	public void run() {
-		logger.info( this.logs.toString(),logService.getName());
+		logger.info( this.logs.toString());
 	}
 
 	

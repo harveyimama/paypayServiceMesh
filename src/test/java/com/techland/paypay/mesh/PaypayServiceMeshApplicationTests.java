@@ -9,25 +9,39 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 
 import com.techland.paypay.mesh.config.Settings;
-import com.techland.paypay.mesh.contracts.ServiceResponse;
 import com.techland.paypay.mesh.impl.Login;
 import com.techland.paypay.mesh.impl.PayPayController;
 import com.techland.paypay.mesh.impl.User;
 import com.techland.paypay.mesh.responses.AsyncResponse;
-import com.techland.paypay.mesh.responses.ResponseFactory;
+import com.techland.paypay.mesh.responses.LoginResponse;
+import com.techland.paypay.mesh.responses.SimpleResponse;
+import com.techland.paypay.mesh.services.CreateUserService;
+import com.techland.paypay.mesh.services.GetUserService;
+import com.techland.paypay.mesh.services.LoginService;
 
 
 @SpringBootTest
 class PaypayServiceMeshApplicationTests {
 	
-	PayPayController controller;
+	PayPayController controller = new PayPayController();
 	
 	@Autowired
-	User user;	
+	User user ;	
 	@Autowired
 	Login login ;
 	@Autowired
 	AsyncResponse res ;
+	@Autowired
+	LoginResponse resLogin ;
+	@Autowired
+	SimpleResponse repSimple;
+	@Autowired
+	CreateUserService cus;
+	@Autowired
+	GetUserService gus;
+	
+	@Autowired
+	LoginService ls;
 	
 	
 	@BeforeEach
@@ -38,6 +52,10 @@ class PaypayServiceMeshApplicationTests {
 		user.setUsername("Test");
 		user.setFullname("Test");
 		user.setPassword("Test");
+		user.setEmail("Test");
+		user.setMerchantId("Test");
+		user.setRole("test");
+		
 		login.setUsername("Test");
 		login.setPassword("Test");	
 	}
@@ -45,44 +63,29 @@ class PaypayServiceMeshApplicationTests {
 
 	@Test
 	void TestCreateUser() {
-		assert(res !=null);
-		assert(user !=null);
-	
-		/*res = (AsyncResponse) controller.CreateUser(null);
-		assert(res.equals(SystemResponse.NotNull(res)));
 		
-		res = (AsyncResponse) controller.CreateUser(user);
-		assert(res.getMessage().equals("Test sucessful"));
-		assert(res.getSuccess());
-		assert(res.getResponseCode()==0);	*/
+		cus.addData(user);
+		res = cus.doRequest();
 		
-		}
-	
-	/*@Test
-	void TestLogin() {
+		System.out.println("++++++++++++++++++++++++++++++++");
+		System.out.println(res.getMessage());
 		
-		res = controller.Login(null);
-		assert(res.equals(SystemResponse.NotNull(new AsyncResponse())));
-		
-		res = controller.Login(login);
-		assert(res.getMessage().equals("Test sucessful"));
-		assert(res.getSuccess());
-		assert(res.getResponseCode()==0);		
-		
-		}
-	
-	
-	
-	@Test
-	void TestCreateUserAsync() {
-		
-		res = controller.CreateUserAsync(null);
-		assert(res.equals(SystemResponse.NotNull(new AsyncResponse())));
-		
-		res = controller.CreateUserAsync(user);
-		assert(res.getMessage().equals("Test sucessful"));
+		assert(res.getMessage().equals("Sucessfully sent"));
 		assert(res.getSuccess());
 		assert(res.getResponseCode()==0);	
+		
+			
+		}
+	
+	@Test
+	void TestLogin() {
+		
+		ls.addData(login);
+		resLogin =	ls.doRequest();		
+		assert(resLogin.getMessage().equals("Test sucessful"));
+		assert(resLogin.getSuccess());
+		assert(resLogin.getResponseCode()==0);	
+		
 		
 		}
 	
@@ -90,18 +93,16 @@ class PaypayServiceMeshApplicationTests {
 	
 	@Test
 	void TestGetUser() {
+		gus.addData("");
+		repSimple = 	(SimpleResponse) gus.doRequest()	;		
+		assert(repSimple.getMessage().equals("Test sucessful"));
+		assert(repSimple.getSuccess());
+		assert(repSimple.getResponseCode()==0);	
 		
-		res = controller.getUser(null);
-		assert(res.equals(SystemResponse.NotNull(new AsyncResponse())));
-		
-		res = controller.getUser("");
-		assert(res.getMessage().equals("Test sucessful"));
-		assert(res.getSuccess());
-		assert(res.getResponseCode()==0);	
 		
 		}
 	
-	*/
+	
 	
 	
 	@AfterEach

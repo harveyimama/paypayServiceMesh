@@ -1,9 +1,11 @@
 package com.techland.paypay.mesh.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.techland.paypay.mesh.contracts.ProcessorType;
 import com.techland.paypay.mesh.contracts.Service;
+import com.techland.paypay.mesh.contracts.ServiceResponse;
 import com.techland.paypay.mesh.contracts.ServiceType;
 import com.techland.paypay.mesh.ennums.ServiceTypeEnum;
 import com.techland.paypay.mesh.helper.URLs;
@@ -12,6 +14,7 @@ import com.techland.paypay.mesh.processorTypes.GeneralProcessor;
 import com.techland.paypay.mesh.responses.LoginResponse;
 import com.techland.paypay.mesh.serviceTypes.ServiceTypeFactory;
 
+@Component
 public final class LoginService implements Service<Login> {
 
 	private final ServiceType serviceType;
@@ -22,8 +25,11 @@ public final class LoginService implements Service<Login> {
 	private final boolean isForm;
 	@Autowired
 	private PayPayServiceProcessor<LoginService, Login,ProcessorType> serviceProcessor;
+	@Autowired
 	private GeneralProcessor processor;
 	private int readTimeOut,connectTimeOut;
+	@Autowired
+	private LoginResponse loginResponse;
 	
 
 	public LoginService() {
@@ -35,13 +41,21 @@ public final class LoginService implements Service<Login> {
 		this.readTimeOut = 2211;
 		this.connectTimeOut = 221;
 		this.name = "LoginService";
-		this.serviceProcessor = new PayPayServiceProcessor<LoginService, Login, ProcessorType>();
-
+		
 	}
 
 	@Override
-	public LoginResponse doRequest() {		
-		return 	serviceProcessor.processService(this, this.data,this.processor);
+	public LoginResponse doRequest() {	
+		
+		ServiceResponse res = 	serviceProcessor.processService(this, this.data,this.processor);
+		
+		loginResponse.setAll(res.getMessage(), res.getResponseCode(), res.getSuccess());
+		if(res.getSuccess())
+		{
+			//TODO add other things from result
+			
+		}
+		return loginResponse;
 	}
 
 	@Override

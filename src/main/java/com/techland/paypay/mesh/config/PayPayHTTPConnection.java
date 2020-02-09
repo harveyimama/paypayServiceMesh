@@ -24,7 +24,7 @@ public final class PayPayHTTPConnection {
 				connections.put(postedurl, conn);
 			}
 		} catch (Exception e) {
-			//e.printStackTrace();
+			e.printStackTrace();
 		} 	
 		
 		return conn;	

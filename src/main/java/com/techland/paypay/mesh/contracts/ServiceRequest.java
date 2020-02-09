@@ -7,5 +7,9 @@ public interface ServiceRequest {
 	
 	
 	public boolean isNull();
+	
+	public boolean isAsync();
+	
+	public void setAsync(boolean async);
 
 }

@@ -4,6 +4,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.techland.paypay.mesh.config.PayPayThread;
@@ -17,6 +18,8 @@ import com.techland.paypay.mesh.processorTypes.MockProcessor;
 public final class PayPayServiceProcessor<R extends Service<S>, S,W extends ProcessorType> implements  Processor<R,S,W>  {
 
 	private final ReentrantLock lock = new ReentrantLock();
+	@Autowired
+	private MockProcessor mockProcessor;
 	
 
 	@SuppressWarnings("unchecked")
@@ -25,7 +28,7 @@ public final class PayPayServiceProcessor<R extends Service<S>, S,W extends Proc
 		try {
 			
 			if (Settings.MOCK)
-				processor = (W) new MockProcessor();
+				processor = (W) mockProcessor;
 
 			if (service.getServiceType().getReturnType()) 
 				ret =  processor.doProcessing(service.getURL(), data.toString(), service.getContentType(),

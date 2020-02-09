@@ -6,6 +6,7 @@ public final class Settings {
 	public final static int THREAD_LOCK_TIMEOUT = 8;
 	public static boolean MOCK;
 	public final static int ASYNC_WAIT_TIME = 2;
+	public final static int ASYNC_NUMBER_OF_TRIES= 2;
 	
 	public  static void setTest()
 	{
