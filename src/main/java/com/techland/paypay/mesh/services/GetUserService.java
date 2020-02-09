@@ -11,7 +11,9 @@ import com.techland.paypay.mesh.contracts.ServiceResponse;
 import com.techland.paypay.mesh.contracts.ServiceType;
 import com.techland.paypay.mesh.ennums.ServiceTypeEnum;
 import com.techland.paypay.mesh.helper.URLs;
+import com.techland.paypay.mesh.impl.User;
 import com.techland.paypay.mesh.processorTypes.GeneralProcessor;
+import com.techland.paypay.mesh.responses.UserResponse;
 import com.techland.paypay.mesh.serviceTypes.ServiceTypeFactory;
 @Component
 public final class GetUserService implements Service<String> {
@@ -21,6 +23,10 @@ public final class GetUserService implements Service<String> {
 	private String id;
 	@Autowired
 	private GeneralProcessor processor;
+	@Autowired
+	private User user;
+	@Autowired
+	private UserResponse respUser;
 	private final String contentType,name;
 	private final boolean isForm;
 	@Autowired
@@ -41,8 +47,12 @@ public final class GetUserService implements Service<String> {
 
 	@Override
 	public ServiceResponse doRequest() {		
-	
-		return 	serviceProcessor.processService(this, this.id,this.processor);
+		//TODO set user params
+		
+		ServiceResponse resp = serviceProcessor.processService(this, this.id,this.processor);
+		respUser.setUser(user);
+		respUser.setAll(resp.getMessage(), resp.getResponseCode(), resp.getSuccess());
+		return respUser;
 		
 	}
 

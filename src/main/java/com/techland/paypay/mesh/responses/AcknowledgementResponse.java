@@ -6,10 +6,10 @@ import com.techland.paypay.mesh.contracts.ServiceResponse;
 
 
 @Component
-public class SimpleResponse extends ServiceResponse {
+public class AcknowledgementResponse extends ServiceResponse {
 	
 	
-	public SimpleResponse()
+	public AcknowledgementResponse()
 	{
 		super();
 	}

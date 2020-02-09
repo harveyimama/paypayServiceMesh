@@ -13,7 +13,7 @@ import com.techland.paypay.mesh.ennums.ServiceTypeEnum;
 import com.techland.paypay.mesh.helper.URLs;
 import com.techland.paypay.mesh.impl.User;
 import com.techland.paypay.mesh.processorTypes.GeneralProcessor;
-import com.techland.paypay.mesh.responses.AsyncResponse;
+import com.techland.paypay.mesh.responses.CreateResponse;
 import com.techland.paypay.mesh.serviceTypes.ServiceTypeFactory;
 
 @Component
@@ -31,7 +31,7 @@ public final  class CreateUserService implements Service<User> {
 	@Autowired
 	public PayPayServiceProcessor<CreateUserService, User, ProcessorType> serviceProcessor;
 	@Autowired
-	private AsyncResponse serviceResponse;
+	private CreateResponse serviceResponse;
 
 	public CreateUserService() {
 		
@@ -46,7 +46,7 @@ public final  class CreateUserService implements Service<User> {
 	}
 
 	@Override
-	public AsyncResponse doRequest() {
+	public CreateResponse doRequest() {
 		
 		this.serviceResponse.setID(UUID.randomUUID().toString()); 
 		serviceProcessor.processService(this, this.data, this.processor);

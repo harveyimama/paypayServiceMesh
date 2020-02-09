@@ -12,9 +12,10 @@ import com.techland.paypay.mesh.config.Settings;
 import com.techland.paypay.mesh.impl.Login;
 import com.techland.paypay.mesh.impl.PayPayController;
 import com.techland.paypay.mesh.impl.User;
-import com.techland.paypay.mesh.responses.AsyncResponse;
+import com.techland.paypay.mesh.responses.CreateResponse;
 import com.techland.paypay.mesh.responses.LoginResponse;
-import com.techland.paypay.mesh.responses.SimpleResponse;
+import com.techland.paypay.mesh.responses.UserResponse;
+import com.techland.paypay.mesh.responses.AcknowledgementResponse;
 import com.techland.paypay.mesh.services.CreateUserService;
 import com.techland.paypay.mesh.services.GetUserService;
 import com.techland.paypay.mesh.services.LoginService;
@@ -30,11 +31,13 @@ class PaypayServiceMeshApplicationTests {
 	@Autowired
 	Login login ;
 	@Autowired
-	AsyncResponse res ;
+	CreateResponse res ;
 	@Autowired
 	LoginResponse resLogin ;
 	@Autowired
-	SimpleResponse repSimple;
+	AcknowledgementResponse repSimple;
+	@Autowired
+	UserResponse repUser;
 	@Autowired
 	CreateUserService cus;
 	@Autowired
@@ -67,9 +70,6 @@ class PaypayServiceMeshApplicationTests {
 		cus.addData(user);
 		res = cus.doRequest();
 		
-		System.out.println("++++++++++++++++++++++++++++++++");
-		System.out.println(res.getMessage());
-		
 		assert(res.getMessage().equals("Sucessfully sent"));
 		assert(res.getSuccess());
 		assert(res.getResponseCode()==0);	
@@ -94,10 +94,10 @@ class PaypayServiceMeshApplicationTests {
 	@Test
 	void TestGetUser() {
 		gus.addData("");
-		repSimple = 	(SimpleResponse) gus.doRequest()	;		
-		assert(repSimple.getMessage().equals("Test sucessful"));
-		assert(repSimple.getSuccess());
-		assert(repSimple.getResponseCode()==0);	
+		repUser = 	(UserResponse) gus.doRequest()	;		
+		assert(repUser.getMessage().equals("Test sucessful"));
+		assert(repUser.getSuccess());
+		assert(repUser.getResponseCode()==0);	
 		
 		
 		}

@@ -6,12 +6,12 @@ import com.techland.paypay.mesh.contracts.ServiceResponse;
 
 
 @Component
-public class AsyncResponse extends ServiceResponse {
+public class CreateResponse extends ServiceResponse {
 	
 	private  String ID;
 	
 	
-	public AsyncResponse()
+	public CreateResponse()
 	{
 		super();
 	}

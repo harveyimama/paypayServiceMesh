@@ -13,7 +13,7 @@ import com.techland.paypay.mesh.config.PayPayHTTPConnection;
 import com.techland.paypay.mesh.contracts.ProcessorType;
 import com.techland.paypay.mesh.contracts.ServiceResponse;
 import com.techland.paypay.mesh.responses.ResponseFactory;
-import com.techland.paypay.mesh.responses.SimpleResponse;
+import com.techland.paypay.mesh.responses.AcknowledgementResponse;
 
 @Component
 public  final  class GeneralProcessor implements ProcessorType {
@@ -22,7 +22,7 @@ public  final  class GeneralProcessor implements ProcessorType {
 	private boolean isFormParam;
 	private int connectTimeOut,readTimeOut; 
 	@Autowired
-	private SimpleResponse response;
+	private AcknowledgementResponse response;
 
 
 	public GeneralProcessor() {

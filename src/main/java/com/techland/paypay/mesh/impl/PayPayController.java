@@ -14,10 +14,11 @@ import com.techland.paypay.mesh.config.PayPayLogger;
 import com.techland.paypay.mesh.config.Settings;
 import com.techland.paypay.mesh.contracts.Service;
 import com.techland.paypay.mesh.contracts.ServiceResponse;
-import com.techland.paypay.mesh.responses.AsyncResponse;
+import com.techland.paypay.mesh.responses.CreateResponse;
 import com.techland.paypay.mesh.responses.LoginResponse;
 import com.techland.paypay.mesh.responses.ResponseFactory;
-import com.techland.paypay.mesh.responses.SimpleResponse;
+import com.techland.paypay.mesh.responses.UserResponse;
+import com.techland.paypay.mesh.responses.AcknowledgementResponse;
 import com.techland.paypay.mesh.services.GetUserService;
 import com.techland.paypay.mesh.services.CreateUserService;
 import com.techland.paypay.mesh.services.LoginService;
@@ -36,7 +37,7 @@ public class PayPayController {
 	// customer,transaction,invoice,report,product,integration
 
 	@Autowired
-	AsyncResponse respAsync;
+	CreateResponse respCreate;
 	@Autowired
 	LoginResponse respLogin;
 	@Autowired
@@ -46,9 +47,11 @@ public class PayPayController {
 	@Autowired
 	PayPayLogger paypayLogger;
 	@Autowired
-	SimpleResponse respSimple;
+	AcknowledgementResponse respAck;
 	@Autowired
-	GetUserService curs;
+	GetUserService gus;
+	@Autowired
+	UserResponse respUser;
 
 	
 	/**
@@ -56,22 +59,22 @@ public class PayPayController {
 	 * @return
 	 */
 	@GetMapping(path = "/api/user/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ServiceResponse getUser(@PathVariable(value = "id") final String id) {
+	public UserResponse getUser(@PathVariable(value = "id") final String id) {
 
 		if (id == null || "".equals(id)) {
 			paypayLogger.doLog(cus.getName(), id);
-			return ResponseFactory.NotNull(respSimple);
+			return ResponseFactory.NotNull(respUser);
 		}
 
-		curs.addData(id);
-		respSimple = (SimpleResponse) curs.doRequest();
+		gus.addData(id);
+		respUser = (UserResponse) gus.doRequest();
 
-		if (respSimple == null)
-			respSimple = ResponseFactory.NullResponse(respSimple);
+		if (respUser == null)
+			respUser = ResponseFactory.NullResponse(respUser);
 
-		paypayLogger.doLog(curs.getName(), id, respSimple.getMessage());
+		paypayLogger.doLog(gus.getName(), id, respAck.getMessage());
 
-		return respSimple;
+		return respUser;
 
 	}
 
@@ -84,25 +87,25 @@ public class PayPayController {
 
 		if (user.isNull()) {
 			paypayLogger.doLog(cus.getName(), user.toString());
-			return ResponseFactory.NotNull(respSimple);
+			return ResponseFactory.NotNull(respAck);
 		}
 
 		cus.addData(user);
-		respAsync = (AsyncResponse) cus.doRequest();
+		respCreate = (CreateResponse) cus.doRequest();
 		
 		if(user.isAsync())
 		{
-		paypayLogger.doLog(cus.getName(), user.toString(), respAsync.getID().toString(), respAsync.getMessage());
-		return respAsync;
+		paypayLogger.doLog(cus.getName(), user.toString(), respCreate.getID().toString(), respCreate.getMessage());
+		return respCreate;
 		}
 		
-		curs.addData(respAsync.getID().toString());
-		respSimple = iterateRequest(respSimple, curs);
-		if (respSimple == null)
-			respSimple = ResponseFactory.NullResponse(respSimple);
-		paypayLogger.doLog(cus.getName(), user.toString(), respAsync.getID().toString(), respSimple.getMessage());
+		gus.addData(respCreate.getID().toString());
+		respUser = iterateRequest(respUser, gus);
+		if (respUser == null)
+			respUser = ResponseFactory.NullResponse(respUser);
+		paypayLogger.doLog(cus.getName(), user.toString(), respCreate.getID().toString(), respUser.getMessage());
 		
-		return respSimple;
+		return respCreate;
 	}
 
 	/**
