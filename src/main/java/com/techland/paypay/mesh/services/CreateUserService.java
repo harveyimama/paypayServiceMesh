@@ -5,11 +5,11 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.techland.paypay.mesh.config.Settings;
 import com.techland.paypay.mesh.contracts.ProcessorType;
 import com.techland.paypay.mesh.contracts.Service;
 import com.techland.paypay.mesh.contracts.ServiceType;
 import com.techland.paypay.mesh.ennums.ServiceTypeEnum;
+import com.techland.paypay.mesh.helper.Messages;
 import com.techland.paypay.mesh.helper.URLs;
 import com.techland.paypay.mesh.impl.User;
 import com.techland.paypay.mesh.processorTypes.GeneralProcessor;
@@ -50,7 +50,7 @@ public final  class CreateUserService implements Service<User> {
 		
 		this.serviceResponse.setID(UUID.randomUUID().toString()); 
 		serviceProcessor.processService(this, this.data, this.processor);
-		serviceResponse.setAll("Sucessfully sent", 0, true);
+		serviceResponse.setAll(Messages.USER_SUCCESS, 0, true);
 		return serviceResponse;
 	}
 
