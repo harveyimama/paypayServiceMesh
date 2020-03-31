@@ -13,7 +13,7 @@ public class User  implements ServiceRequest {
 	private String email;
 	private String fullname;
 	private String role;
-	private String merchantId;
+	private String userType;
 	private boolean async =false;
 	
 	
@@ -53,23 +53,24 @@ public class User  implements ServiceRequest {
 	public void setRole(final String role) {
 		this.role = role;
 	}
-	public String getMerchantId() {
-		return merchantId;
-	}
-	public void setMerchantId(final String merchantId) {
-		this.merchantId = merchantId;
-	}
 	
+	
+	public String getUserType() {
+		return userType;
+	}
+	public void setUserType(String userType) {
+		this.userType = userType;
+	}
 	@Override
 	public String toString() {
 		return "{\"id\":\"" + id + "\", \" username\":\"" + username + "\",\" password\":\"" + password + "\",\" email\":\""
-				+ email + "\",\" fullname\":\"" + fullname + "\",\" role\":\"" + role + "\",\" merchantId\":\"" + merchantId
+				+ email + "\",\" fullname\":\"" + fullname + "\",\" role\":\"" + role + "\",\" merchantId\":\"" + userType
 				+ "\",\" async\":\"" + async + "\"}";
 	}
 	
 	@Override
 	public boolean isNull() {
-		if(this.username ==null || this.fullname ==null || this.role == null || this.merchantId == null || this.email ==null )
+		if(this.username ==null || this.fullname ==null || this.role == null || this.userType == null || this.email ==null )
 		return true;
 		else
 			return false;
