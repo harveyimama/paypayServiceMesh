@@ -53,7 +53,7 @@ class PaypayServiceMeshApplicationTests {
 		user.setFullname("Test");
 		user.setPassword("Test");
 		user.setEmail("Test");
-		user.setMerchantId("Test");
+		//user.setMerchantId("Test");
 		user.setRole("test");
 
 		login.setUsername("Test");
